@@ -1,1 +1,1 @@
-export const LOCAL_STORAGE_KEY = 'todo-app';
+export const LOCAL_STORAGE_TODO_APP_KEY = 'todo-app';
