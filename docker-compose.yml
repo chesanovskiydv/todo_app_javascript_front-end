@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: todo_app_javascript_front-end
+    image: todo_app_javascript_front-end
+    build:
+      context: .
+      target: production
+    ports:
+      - "3000:80"
