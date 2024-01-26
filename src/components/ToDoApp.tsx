@@ -1,5 +1,10 @@
 import React from 'react';
 import ToDoForm from './ToDoForm';
+import ToDoList from './ToDoList';
+import TaskContext from '../contexts/TaskContext';
+import useLocalStorage from '../hooks/useLocalStorage';
+import { LOCAL_STORAGE_TODO_APP_KEY } from '../constants';
+import { Task } from '../models/Task';
 
 /**
  * The main component of the todo application.
@@ -8,10 +13,15 @@ import ToDoForm from './ToDoForm';
  * Base tag should be a bootstrap container.
  */
 const ToDoApp = () => {
+  const [tasks, setTasks] = useLocalStorage<Task[]>(LOCAL_STORAGE_TODO_APP_KEY, []);
+
   return (
-    <div className="container">
-      <ToDoForm/>
-    </div>
+    <TaskContext.Provider value={[tasks, setTasks]}>
+      <div className="container">
+        <ToDoForm/>
+        <ToDoList/>
+      </div>
+    </TaskContext.Provider>
   );
 }
 

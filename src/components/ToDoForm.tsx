@@ -1,14 +1,6 @@
-import React, { useState } from 'react';
-import useLocalStorage from '../hooks/useLocalStorage';
-import { LOCAL_STORAGE_KEY } from '../constants';
-import { getRandomId } from '../utils';
-
-// Type for task
-type Task = {
-  id: string;
-  text: string;
-  createdAt: number;
-}
+import React, { useContext, useState } from 'react';
+import TaskModel from '../models/Task';
+import TaskContext from '../contexts/TaskContext';
 
 /**
  * Form to add new todo items.
@@ -20,10 +12,9 @@ type Task = {
  * If the text input is empty, error should be shown.
  */
 const ToDoForm = () => {
+  const [tasks, setTasks] = useContext(TaskContext);
   const [taskText, setTaskText] = useState('');
   const [hasError, setHasError] = useState(false);
-  // Work with LocalStorage
-  const [tasks, setTasks] = useLocalStorage<Task[]>(LOCAL_STORAGE_KEY, []);
 
   // onChange task handler
   const onChangeTask = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,9 +28,9 @@ const ToDoForm = () => {
       setHasError(true);
       return;
     }
-    const task: Task = {id: getRandomId(), text: taskText, createdAt: Date.now()};
+    const task = TaskModel.create(taskText);
 
-    setTasks([...tasks, task]);
+    setTasks([...tasks, task.getJson()]);
     setTaskText('');
   }
 

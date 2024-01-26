@@ -1,9 +1,8 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import ToDoForm from './ToDoForm';
-import useLocalStorage from '../hooks/useLocalStorage';
-import { LOCAL_STORAGE_KEY } from '../constants';
+import TaskContext from '../contexts/TaskContext';
 
 // Mock useLocalStorage hook
 jest.mock('../hooks/useLocalStorage', () => {
@@ -16,6 +15,16 @@ jest.mock('../hooks/useLocalStorage', () => {
     }
   };
 });
+
+/**
+ * Custom render function to wrap the component with the TaskContext provider.
+ */
+const customRender = (ui: any, {providerProps, ...renderOptions}: any = {}) => {
+  return render(
+    <TaskContext.Provider {...providerProps}>{ui}</TaskContext.Provider>,
+    renderOptions
+  );
+}
 
 /**
  * Test suite for ToDoForm component.
@@ -64,7 +73,10 @@ describe('ToDoForm', () => {
   });
 
   it('should add task to the localStorage', async () => {
-    render(<ToDoForm/>);
+    const setTasks = jest.fn();
+    const providerProps = {value: [[], setTasks]};
+    customRender(<ToDoForm/>, { providerProps });
+
     const inputElement = screen.getByPlaceholderText('Type your task name...');
     const buttonElement = screen.getByText('Add');
 
@@ -74,7 +86,6 @@ describe('ToDoForm', () => {
       buttonElement.click();
     });
 
-    const [, setTasks] = useLocalStorage(LOCAL_STORAGE_KEY, []);
     expect(setTasks).toHaveBeenCalledWith([{id: expect.any(String), text: 'My task', createdAt: expect.any(Number)}]);
 
     await waitFor(() => {
