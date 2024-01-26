@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { LOCAL_STORAGE_KEY } from '../constants';
 import { getRandomId } from '../utils';
@@ -46,7 +46,7 @@ const ToDoForm = () => {
   return (
     <div>
       <h1>Add task</h1>
-      <form onSubmit={e => e.preventDefault()}>
+      <form aria-label="form" onSubmit={e => e.preventDefault()}>
         <div className="row g-3">
           <div className="col">
             <input type="text" className={`form-control ${hasError ? 'is-invalid' : ''}`}
